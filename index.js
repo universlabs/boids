@@ -14,6 +14,7 @@ function Boids(opts, callback) {
   EventEmitter.call(this)
 
   opts = opts || {}
+  opts.bounds = opts.bounds || { min: {}, max: {} }
   callback = callback || function(){}
 
   this.speedLimitRoot = opts.speedLimit || 0
@@ -31,7 +32,8 @@ function Boids(opts, callback) {
   var boids = this.boids = []
   for (var i = 0, l = opts.boids === undefined ? 50 : opts.boids; i < l; i += 1) {
     boids[i] = [
-        Math.random()*25, Math.random()*25 // position
+        (opts.bounds.min.x || 0) + (Math.random() * (opts.bounds.max.x || 25))
+        , (opts.bounds.min.y || 0) + (Math.random() * (opts.bounds.max.y || 25)) // position
       , 0, 0                               // speed
       , 0, 0                               // acceleration
     ]
