@@ -6,6 +6,7 @@ var EventEmitter = require('events').EventEmitter
   , SPEEDY = 3
   , ACCELERATIONX = 4
   , ACCELERATIONY = 5
+  , ANGLE = 6
 
 module.exports = Boids
 
@@ -36,6 +37,7 @@ function Boids(opts, callback) {
         , (opts.bounds.min.y || 0) + (Math.random() * (opts.bounds.max.y || 25)) // position
       , 0, 0                               // speed
       , 0, 0                               // acceleration
+      , 0 // angle
     ]
   }
 
@@ -156,6 +158,8 @@ Boids.prototype.tick = function() {
 
     boids[current][POSITIONX] += boids[current][SPEEDX]
     boids[current][POSITIONY] += boids[current][SPEEDY]
+
+    boids[current][ANGLE] = angle(boids[current][SPEEDX], boids[current][SPEEDY])
   }
 
   this.emit('tick', boids)
@@ -169,4 +173,14 @@ function hypot(a, b) {
   var lo = Math.min(a, b)
   var hi = Math.max(a, b)
   return hi + 3 * lo / 32 + Math.max(0, 2 * lo - hi) / 8 + Math.max(0, 4 * lo - hi) / 16
+}
+
+function angle(x, y) {
+  var angle = Math.atan2(-x, -y);
+  if(angle < 0) {
+    angle = Math.abs(angle);
+  } else {
+    angle = (Math.PI * 2) - angle;
+  }
+  return angle;
 }
